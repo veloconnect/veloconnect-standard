@@ -1,0 +1,137 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns="urn:veloconnect:sale-B2X-1.6"
+  xmlns:vct="urn:veloconnect:transaction-1.0"
+  xmlns:sle="urn:veloconnect:sale-1.6"
+  xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-1.0"
+  xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-1.0" targetNamespace="urn:veloconnect:sale-B2X-1.6" elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+  <xsd:import namespace="urn:veloconnect:transaction-1.0" schemaLocation="transaction-1.0.xsd" />
+  <xsd:import namespace="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-1.0" schemaLocation="ubl/common/UBL-CommonBasicComponents-1.0.xsd" />
+  <xsd:import namespace="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-1.0" schemaLocation="ubl/common/UBL-CommonAggregateComponents-1.0.xsd" />
+  <xsd:import namespace="urn:veloconnect:sale-1.6" schemaLocation="sale-1.6.xsd" />
+
+  <xsd:element name="SaleTransmitB2XRequest">
+    <xsd:annotation>
+      <xsd:documentation>
+				Request to transmit sales to a third party
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="vct:RequestType">
+          <xsd:sequence>
+            <xsd:element name="CreateDate" type="cbc:DateTimeType" minOccurs="1" maxOccurs="1" />
+            <xsd:element maxOccurs="unbounded" minOccurs="1" ref="SaleTransmitB2XLine"/>
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="SaleTransmitB2XLine">
+    <xsd:annotation>
+      <xsd:documentation>
+        Mandatory fields:
+          - For goods: ID, SaleDate, StandardItemIdentification or ManufacturerItemIdentification with a brand-id, Quantity
+          - For services: ID, SaleDate, CommodityClassification, Description, SalesPriceNet or SalesPriceGross
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element maxOccurs="1" minOccurs="1" name="ID" type="xsd:normalizedString"/>
+        <xsd:element maxOccurs="1" minOccurs="0" ref="cac:StandardItemIdentification"/>
+        <xsd:element maxOccurs="1" minOccurs="0" ref="cac:CommodityClassification"/>
+        <xsd:element maxOccurs="1" minOccurs="0" ref="cac:ManufacturersItemIdentification"/>
+        <xsd:element maxOccurs="1" minOccurs="0" ref="cac:BuyersItemIdentification"/>
+        <xsd:element maxOccurs="1" minOccurs="0" name="Description" type="cbc:DescriptionType"/>
+        <xsd:element maxOccurs="1" minOccurs="0" name="BidexProductGroupKey" type="sle:BidexProductGroupKeyType"/>
+        <xsd:element maxOccurs="1" minOccurs="1" name="SaleDate" type="cbc:DateTimeType"/>
+        <xsd:element maxOccurs="2" minOccurs="0" name="Quantity" type="cbc:QuantityType"/>
+        <xsd:element maxOccurs="1" minOccurs="0" name="DocumentNumber" type="xsd:normalizedString"/>
+        <xsd:element maxOccurs="1" minOccurs="0" name="SalesPriceGross" type="cbc:PriceAmountType"/>
+        <xsd:element maxOccurs="1" minOccurs="0" name="SalesPriceNet" type="cbc:PriceAmountType"/>
+        <xsd:element maxOccurs="1" minOccurs="0" name="RecommendedRetailPrice" type="cbc:PriceAmountType"/>
+        <xsd:element maxOccurs="1" minOccurs="0" name="PostalCode" type="cbc:ZoneType"/>
+        <xsd:element maxOccurs="1" minOccurs="0" name="SalesChannel" type="sle:SalesChannelType"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="SaleTransmitB2XResponse">
+    <xsd:annotation>
+      <xsd:documentation>
+				Response containing the state, if the sales are imported successfully.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="vct:TransactionResponseType">
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="GetStatusSaleTransmitB2XRequest">
+    <xsd:annotation>
+      <xsd:documentation>Pick up the results of SaleTransmitB2XResponse.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="vct:TransactionRequestType">
+          <xsd:sequence>
+            <xsd:element name="StartIndex" type="xsd:integer"/>
+            <xsd:element name="Count" type="xsd:integer"/>
+            <xsd:element name="DoNotClose" type="xsd:boolean" minOccurs="0" maxOccurs="1"/>
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="GetStatusSaleTransmitB2XResponse">
+    <xsd:annotation>
+      <xsd:documentation>Return the results of GetStatusSaleTransmitB2XRequest.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="vct:TransactionResponseType">
+          <xsd:sequence>
+            <xsd:element name="StartIndex" type="xsd:integer"/>
+            <xsd:element name="Count" type="xsd:integer"/>
+            <xsd:element name="TotalCount" type="xsd:integer"/>
+            <xsd:choice minOccurs="0" maxOccurs="1">
+              <xsd:sequence>
+                <xsd:element ref="SaleTransmitB2XResponseLine" minOccurs="1" maxOccurs="unbounded" />
+              </xsd:sequence>
+
+            </xsd:choice>
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="SaleTransmitB2XResponseLine">
+    <xsd:annotation>
+      <xsd:documentation>
+				Result of GetStatusSaleTransmitB2XResponse
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element maxOccurs="1" minOccurs="1" name="ID" type="xsd:normalizedString"/>
+        <xsd:element maxOccurs="1" minOccurs="0" ref="cac:StandardItemIdentification"/>
+        <xsd:element maxOccurs="1" minOccurs="0" ref="cac:CommodityClassification"/>
+        <xsd:element maxOccurs="1" minOccurs="0" ref="cac:ManufacturersItemIdentification"/>
+        <xsd:element maxOccurs="1" minOccurs="0" ref="cac:BuyersItemIdentification"/>
+        <xsd:element maxOccurs="1" minOccurs="0" name="Description" type="cbc:DescriptionType"/>
+        <xsd:element maxOccurs="1" minOccurs="1" name="SaleDate" type="cbc:DateTimeType"/>
+        <xsd:element maxOccurs="2" minOccurs="0" name="Quantity" type="cbc:QuantityType"/>
+        <xsd:element maxOccurs="1" minOccurs="0" name="SalesPriceGross" type="cbc:PriceAmountType"/>
+        <xsd:element maxOccurs="1" minOccurs="0" name="SalesPriceNet" type="cbc:PriceAmountType"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+</xsd:schema>

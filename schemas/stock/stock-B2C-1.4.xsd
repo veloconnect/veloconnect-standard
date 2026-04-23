@@ -1,0 +1,263 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns="urn:veloconnect:stock-B2C-1.4"
+  xmlns:stk="urn:veloconnect:stock-1.4"
+  xmlns:vct="urn:veloconnect:transaction-1.0"
+  xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-1.0"
+  xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-1.0"
+  xmlns:udt="urn:oasis:names:specification:ubl:schema:xsd:UnspecializedDatatypes-1.0"
+  xmlns:sdt="urn:oasis:names:specification:ubl:schema:xsd:SpecializedDatatypes-1.0" targetNamespace="urn:veloconnect:stock-B2C-1.4" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xsd:import namespace="urn:veloconnect:transaction-1.0" schemaLocation="transaction-1.0.xsd" />
+  <xsd:import namespace="urn:oasis:names:specification:ubl:schema:xsd:SpecializedDatatypes-1.0" schemaLocation="ubl/common/UBL-SpecializedDatatypes-1.0.xsd" />
+  <xsd:import namespace="urn:oasis:names:specification:ubl:schema:xsd:UnspecializedDatatypes-1.0" schemaLocation="ubl/common/UBL-UnspecializedDatatypes-1.0.xsd" />
+  <xsd:import namespace="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-1.0" schemaLocation="ubl/common/UBL-CommonBasicComponents-1.0.xsd" />
+  <xsd:import namespace="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-1.0" schemaLocation="ubl/common/UBL-CommonAggregateComponents-1.0.xsd" />
+  <xsd:import namespace="urn:veloconnect:stock-1.4" schemaLocation="stock-1.4.xsd" />
+
+
+
+  <xsd:element name="StockTransmitB2CRequest">
+    <xsd:annotation>
+      <xsd:documentation>
+				Request to transmit stocks or availabilities to Marketplaces or webshops
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="vct:RequestType">
+          <xsd:sequence>
+            <xsd:element name="CreateDate" type="cbc:DateTimeType" minOccurs="1" maxOccurs="1" />
+            <xsd:element name="Frequence" type="stk:FrequenceType" minOccurs="1" maxOccurs="1" />
+            <xsd:element maxOccurs="unbounded" minOccurs="1" ref="StockTransmitB2CLine"/>
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="StockTransmitB2CResponse">
+    <xsd:annotation>
+      <xsd:documentation>
+				Response containing the state, if the stocks are imported successfully.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="vct:TransactionResponseType">
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="StockTransmitB2CLine">
+    <xsd:annotation>
+      <xsd:documentation>
+				The availability is mandatory, stock quantity is optional.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <!-- Die allgemeingültige EAN Nummer, wenn es sie denn gibt -->
+        <xsd:element maxOccurs="1" minOccurs="0" ref="cac:StandardItemIdentification"/>
+        <!-- die Nummer des Herstellers:  MPN (manufacturer’s part number) mit Party Befüllung -->
+        <xsd:element maxOccurs="1" minOccurs="0" ref="cac:ManufacturersItemIdentification"/>
+        <!-- die Nummer im Marketplace (ohne Party) -->
+        <xsd:element maxOccurs="1" minOccurs="0" ref="MarketPlaceItemIdentification"/>
+        <!-- die spezielle Artikelnummer des Einzelhändlers -->
+        <xsd:element maxOccurs="1" minOccurs="0" ref="cac:BuyersItemIdentification"/>
+        <xsd:element maxOccurs="1" minOccurs="0" ref="cbc:Quantity"/>
+        <xsd:element maxOccurs="1" minOccurs="0" name="Availability" type="stk:AvailabilityType"/>
+        <!-- Verkaufspreis der Filiale inkl. gesetzl. MwSt. der Typ BasePrice enthält auch die Währung -->
+        <xsd:element maxOccurs="1" minOccurs="0" ref="cac:BasePrice"/>
+        <!-- AKtionspreis der Filiale inkl. gesetzl. MwSt. -->
+        <xsd:element maxOccurs="1" minOccurs="0" ref="SpecialPrice"/>
+        <!-- Name der Aktion (s. PAngV) -->
+        <xsd:element maxOccurs="1" minOccurs="0" name="SpecialPriceName" type="SpecialPriceNameType"/>
+        <!-- Start der Aktion -->
+        <xsd:element maxOccurs="1" minOccurs="0" name="SpecialPriceStart" type="SpecialPriceDateType"/>
+        <!-- Ende der Aktion -->
+        <xsd:element maxOccurs="1" minOccurs="0" name="SpecialPriceEnd" type="SpecialPriceDateType"/>
+        <!-- Versandkosten entsprechend den Empfänger-spezifischen Anforderungen. -->
+        <xsd:element maxOccurs="1" minOccurs="0" name="Shipping" type="cac:BasePriceType"/>
+        <!-- MWSt. Satz für diesen Artikel im bekannten UBL Format -->
+        <xsd:element maxOccurs="1" minOccurs="0" name="TaxCategory" type="cac:TaxCategoryType"/>
+        <!-- Ist der Artikel online bestellbar -->
+        <xsd:element maxOccurs="1" minOccurs="0" name="Orderable" type="xsd:boolean"/>
+        <!-- Deep-Link für Artikel im Onlineshop des Händlers. Beispiel: http://www.KleinerFahrradHaendler.de/FahrradmodellMusterrad4711.html -->
+        <xsd:element maxOccurs="1" minOccurs="0" name="Url" type="xsd:anyURI" />
+        <!-- Lieferzeit in Tagen mind. -->
+        <xsd:element maxOccurs="1" minOccurs="0" name="DeliveryMin" type="xsd:integer" />
+        <!-- Lieferzeit in Tagen max. -->
+        <xsd:element maxOccurs="1" minOccurs="0" name="DeliveryMax" type="xsd:integer" />
+        <!-- Aktueller Montage-Zustand lt. BIDEX Standard. Näheres siehe  AssemblyCondition -->
+        <xsd:element maxOccurs="1" minOccurs="0" name="Assembly" type="AssemblyCondition" />
+        <!-- Artikel Zustand lt. BIDEX Standard. Näheres siehe  ConditionType -->
+        <xsd:element maxOccurs="1" minOccurs="0" name="Condition" type="ConditionType" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="MarketPlaceItemIdentification" type="cac:ItemIdentificationType"/>
+  <xsd:element name="SpecialPrice" type="cac:BasePriceType">
+    <xsd:annotation>
+      <xsd:documentation>Sonderangebotspreis</xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+
+  <xsd:element name="GetItemStatusStockTransmitB2CRequest">
+    <xsd:annotation>
+      <xsd:documentation>Pick up the results of StockTransmitB2CResponse.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="vct:TransactionRequestType">
+          <xsd:sequence>
+            <xsd:element name="StartIndex" type="xsd:integer"/>
+            <xsd:element name="Count" type="xsd:integer"/>
+            <xsd:element name="DoNotClose" type="xsd:boolean" minOccurs="0" maxOccurs="1"/>
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="GetItemStatusStockTransmitB2CResponse">
+    <xsd:annotation>
+      <xsd:documentation>Return the results of GetItemStatusStockTransmitB2CRequest.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="vct:TransactionResponseType">
+          <xsd:sequence>
+            <xsd:element name="StartIndex" type="xsd:integer"/>
+            <xsd:element name="Count" type="xsd:integer"/>
+            <xsd:element name="TotalCount" type="xsd:integer"/>
+            <xsd:choice minOccurs="0" maxOccurs="1">
+              <xsd:sequence>
+                <xsd:element ref="StockTransmitB2CResponseLine" minOccurs="1" maxOccurs="unbounded" />
+              </xsd:sequence>
+            </xsd:choice>
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+
+
+  <xsd:element name="StockTransmitB2CResponseLine">
+    <xsd:annotation>
+      <xsd:documentation>Result of GetStatusStockTransmitB2CResponse</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <!-- Die allgemeingültige EAN Nummer, wenn es sie denn gibt -->
+        <xsd:element maxOccurs="1" minOccurs="0" ref="cac:StandardItemIdentification"/>
+        <!-- die Nummer des Herstellers:  MPN (manufacturer’s part number) mit Party Befüllung -->
+        <xsd:element maxOccurs="1" minOccurs="0" ref="cac:ManufacturersItemIdentification"/>
+        <!-- die Nummer im Marketplace (ohne Party) -->
+        <xsd:element maxOccurs="1" minOccurs="0" ref="MarketPlaceItemIdentification"/>
+        <!-- die spezielle Artikelnummer des Einzelhändlers -->
+        <xsd:element maxOccurs="1" minOccurs="0" ref="cac:BuyersItemIdentification"/>
+        <!-- True: der Lieferant hat den Artikel noch. False: Der Lieferant hat den Artikel nicht mehr im Sortiment -->
+        <xsd:element maxOccurs="1" minOccurs="0" name="Available" type="xsd:boolean"/>
+
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:simpleType name="ConditionType">
+    <xsd:annotation>
+      <xsd:documentation>Articels condition, BIDEX standard: https://www.bidex.bike/Attribut/Artikel-Zustand/CO </xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:normalizedString">
+      <xsd:enumeration value="CO10">
+        <xsd:annotation>
+          <xsd:documentation>new</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="CO20">
+        <xsd:annotation>
+          <xsd:documentation>used</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="CO30">
+        <xsd:annotation>
+          <xsd:documentation>presentation article</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="CO40">
+        <xsd:annotation>
+          <xsd:documentation>test articel</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="CO50">
+        <xsd:annotation>
+          <xsd:documentation>damaged</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="AssemblyCondition">
+    <xsd:annotation>
+      <xsd:documentation>Current assembly condition, BIDEX standard: https://www.bidex.bike/Attribut/Montage-Zustand/AC Diese Information wird genutzt, um anzuzeigen, dass das Produkt z.B. zur Ansicht oder Probefahrt bereit steht und nicht erst zusammengebaut werden muss.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:normalizedString">
+      <xsd:enumeration value="AC10">
+        <xsd:annotation>
+          <xsd:documentation>No assembly required</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="AC20">
+        <xsd:annotation>
+          <xsd:documentation>Assembly by consumer possible</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="AC30">
+        <xsd:annotation>
+          <xsd:documentation>Assembly by specialist recommended</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="AC40">
+        <xsd:annotation>
+          <xsd:documentation>Assembly by specialist required</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="AC90">
+        <xsd:annotation>
+          <xsd:documentation>Other</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+
+  <xsd:complexType name="SpecialPriceNameType">
+    <xsd:annotation>
+      <xsd:documentation>Name of action</xsd:documentation>
+    </xsd:annotation>
+    <xsd:simpleContent>
+      <xsd:extension base="udt:NameType"/>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:simpleType name="ShippingType">
+    <xsd:annotation>
+      <xsd:documentation>Shipping costs from receiver specified requirenments</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:string">
+      <xsd:maxLength value="256" />
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="SpecialPriceDateType">
+    <xsd:annotation>
+      <xsd:documentation>Starting date or ending date of action</xsd:documentation>
+    </xsd:annotation>
+    <xsd:simpleContent>
+      <xsd:extension base="cbc:DateType"/>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+
+</xsd:schema>

@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns="urn:veloconnect:stock-B2B-1.4"
+  xmlns:stk="urn:veloconnect:stock-1.4"
+  xmlns:vct="urn:veloconnect:transaction-1.0"
+  xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-1.0"
+  xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-1.0"
+  xmlns:udt="urn:oasis:names:specification:ubl:schema:xsd:UnspecializedDatatypes-1.0"
+  xmlns:sdt="urn:oasis:names:specification:ubl:schema:xsd:SpecializedDatatypes-1.0" targetNamespace="urn:veloconnect:stock-B2B-1.4" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xsd:import namespace="urn:veloconnect:transaction-1.0" schemaLocation="transaction-1.0.xsd" />
+  <xsd:import namespace="urn:oasis:names:specification:ubl:schema:xsd:SpecializedDatatypes-1.0" schemaLocation="ubl/common/UBL-SpecializedDatatypes-1.0.xsd" />
+  <xsd:import namespace="urn:oasis:names:specification:ubl:schema:xsd:UnspecializedDatatypes-1.0" schemaLocation="ubl/common/UBL-UnspecializedDatatypes-1.0.xsd" />
+  <xsd:import namespace="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-1.0" schemaLocation="ubl/common/UBL-CommonBasicComponents-1.0.xsd" />
+  <xsd:import namespace="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-1.0" schemaLocation="ubl/common/UBL-CommonAggregateComponents-1.0.xsd" />
+  <xsd:import namespace="urn:veloconnect:stock-1.4" schemaLocation="stock-1.4.xsd" />
+
+  <xsd:element name="StockTransmitB2BRequest">
+    <xsd:annotation>
+      <xsd:documentation>
+				Request to transmit stocks or availabilities to supplier
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="vct:RequestType">
+          <xsd:sequence>
+            <xsd:element name="CreateDate" type="cbc:DateTimeType" minOccurs="1" maxOccurs="1" />
+            <xsd:element name="Frequence" type="stk:FrequenceType" minOccurs="1" maxOccurs="1" />
+            <xsd:element maxOccurs="unbounded" minOccurs="1" ref="StockTransmitB2BLine"/>
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="StockTransmitB2BLine">
+    <xsd:annotation>
+      <xsd:documentation>
+				The availability is mandatory, stock quantity is optional.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <!-- die Nummer des Sellers hier des Lieferanten (hat zwar eine Party, die wird hier aber nicht benötigt) -->
+        <xsd:element maxOccurs="1" minOccurs="1" ref="cac:SellersItemIdentification"/>
+        <!-- Die Artikelnummer des Einzelhändlers  (hat zwar eine Party, die wird hier aber nicht benötigt)-->
+        <xsd:element maxOccurs="1" minOccurs="0" ref="cac:BuyersItemIdentification"/>
+        <xsd:element maxOccurs="1" minOccurs="0" ref="cbc:Quantity"/>
+        <xsd:element maxOccurs="1" minOccurs="1" name="Availability" type="stk:AvailabilityType"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="StockTransmitB2BResponse">
+    <xsd:annotation>
+      <xsd:documentation>
+				Response containing the state, if the stocks are imported successfully.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="vct:TransactionResponseType">
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="GetItemStatusStockTransmitB2BRequest">
+    <xsd:annotation>
+      <xsd:documentation>Pick up the results of StockTransmitB2BResponse.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="vct:TransactionRequestType">
+          <xsd:sequence>
+            <xsd:element name="StartIndex" type="xsd:integer"/>
+            <xsd:element name="Count" type="xsd:integer"/>
+            <xsd:element name="DoNotClose" type="xsd:boolean" minOccurs="0" maxOccurs="1"/>
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="GetItemStatusStockTransmitB2BResponse">
+    <xsd:annotation>
+      <xsd:documentation>Return the results of GetItemStatusStockTransmitB2BRequest.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="vct:TransactionResponseType">
+          <xsd:sequence>
+            <xsd:element name="StartIndex" type="xsd:integer"/>
+            <xsd:element name="Count" type="xsd:integer"/>
+            <xsd:element name="TotalCount" type="xsd:integer"/>
+            <xsd:choice minOccurs="0" maxOccurs="1">
+              <xsd:sequence>
+                <xsd:element ref="StockTransmitB2BResponseLine" minOccurs="1" maxOccurs="unbounded" />
+              </xsd:sequence>
+
+            </xsd:choice>
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="StockTransmitB2BResponseLine">
+    <xsd:annotation>
+      <xsd:documentation>
+				Result of GetStatusStockTransmitB2BResponse
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <!-- die Nummer des Sellers hier des Lieferanten (hat zwar eine Party, die wird hier aber nicht benötigt) -->
+        <xsd:element maxOccurs="1" minOccurs="1" ref="cac:SellersItemIdentification"/>
+        <!-- Die Artikelnummer des Einzelhändlers  (hat zwar eine Party, die wird hier aber nicht benötigt)-->
+        <xsd:element maxOccurs="1" minOccurs="0" ref="cac:BuyersItemIdentification"/>
+        <!-- True: der Lieferant hat den Artikel noch. False: Der Lieferant hat den Artikel nicht mehr im Sortiment -->
+        <xsd:element maxOccurs="1" minOccurs="0" name="Available" type="xsd:boolean"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+</xsd:schema>

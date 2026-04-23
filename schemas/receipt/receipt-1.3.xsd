@@ -1,0 +1,574 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- ****************************************************************************** 
+	Copyright (C) Verbund Selbstverwalteter Fahrradbetriebe e.V. (2005) Dieses 
+	Dokument, sowie Übersetzungen desselben, dürfen uneingeschränkt kopiert und 
+	verteilt werden, vorausgesetzt, der obige Urheberrechtshinweis und diese 
+	und die folgenden Bestimmungen sind in jeder Kopie enthalten. Veränderungen, 
+	die über die Erfordernisse einer Übersetzung hinausgehen, sind nur erlaubt, 
+	wenn die veränderte Version nicht den Namen veloconnect benützt und deutliche 
+	Hinweise darauf enthält, dass diese geänderte Version auf der veloconnect-Spezifikation 
+	beruht und inhaltliche Veräerungen vorgenommen worden sind. Ferner ist der 
+	Urheber dieser Modifikationen zu benennen. Zweck dieser Spezifikation ist 
+	die Implementierung von Software. Der Urheber dieser Spezifikation weist 
+	ausdrücklich darauf hin, dass sich aus dem Urheberrecht an dieser Spezifikation 
+	keinerlei Rechte an diesen Implementierungen ableiten und umgekehrt aus den 
+	Implementierungen keinerlei Ansprüche an den Urheber der Spezifikation entstehen. 
+	Insbesondere übernimmt der Urheber dieser Spezifikation keinerlei Verantwortung 
+	für die Konformität einer Implementierung zur veloconnect-Spezifikation und 
+	verlangt auch keine Lizenzgebühren für die Benutzung der Spezifikation. Der 
+	Urheber übernimmt keinerlei Gewährleistung, insbesondere nicht dafür, dass 
+	diese Spezifikation fehlerfrei oder für einen bestimmten Zweck geeignet ist. 
+	Die hiermit gewährten Rechte sind unwiderruflich. ****************************************************************************** -->
+
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns="urn:veloconnect:receipt-1.3"
+  xmlns:vct="urn:veloconnect:transaction-1.0"
+  xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-1.0"
+  xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-1.0" targetNamespace="urn:veloconnect:receipt-1.3" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xsd:import namespace="urn:veloconnect:transaction-1.0" schemaLocation="transaction-1.0.xsd" />
+  <xsd:import namespace="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-1.0" schemaLocation="ubl/common/UBL-CommonBasicComponents-1.0.xsd" />
+  <xsd:import namespace="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-1.0" schemaLocation="ubl/common/UBL-CommonAggregateComponents-1.0.xsd" />
+
+  <xsd:element name="OfferQueryRequest">
+    <xsd:annotation>
+      <xsd:documentation>Request to query header data of offers
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="vct:RequestType">
+          <xsd:sequence>
+            <xsd:element name="DateRange" type="DateRangeType" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="RequestReference" type="xsd:normalizedString" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="RequestDate" type="cbc:DateType" minOccurs="0" maxOccurs="1" />
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+
+
+  <xsd:element name="OfferQueryResponse">
+    <xsd:annotation>
+      <xsd:documentation>Header data of offers</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="vct:ResponseType">
+          <xsd:sequence>
+            <xsd:element name="DateRange" type="DateRangeType" minOccurs="0" maxOccurs="1" />
+            <xsd:element ref="OfferHeader" minOccurs="0" maxOccurs="unbounded" />
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="OfferDetailsRequest">
+    <xsd:annotation>
+      <xsd:documentation>Request to query offers
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="vct:RequestType">
+          <xsd:sequence>
+            <xsd:element name="OfferID" type="xsd:normalizedString" minOccurs="1" maxOccurs="unbounded" />
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="OfferDetailsResponse">
+    <xsd:annotation>
+      <xsd:documentation>Responst to the offer query
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="vct:ResponseType">
+          <xsd:sequence>
+            <xsd:element ref="Offer" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="UnknownID" type="xsd:normalizedString" minOccurs="0" maxOccurs="unbounded" />
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+
+
+  <xsd:element name="OrderConfirmationQueryRequest">
+    <xsd:annotation>
+      <xsd:documentation>Request to query header data of order confirmations
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="vct:RequestType">
+          <xsd:sequence>
+            <xsd:element name="DateRange" type="DateRangeType" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="OrderID" type="xsd:normalizedString" minOccurs="0" maxOccurs="unbounded" />
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="OrderConfirmationQueryResponse">
+    <xsd:annotation>
+      <xsd:documentation>Header data of order confirmations</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="vct:ResponseType">
+          <xsd:sequence>
+            <xsd:element name="DateRange" type="DateRangeType" minOccurs="0" maxOccurs="1" />
+            <xsd:element ref="OrderConfirmationHeader" minOccurs="0" maxOccurs="unbounded" />
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="OrderConfirmationDetailsRequest">
+    <xsd:annotation>
+      <xsd:documentation>Request to query order confirmations
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="vct:RequestType">
+          <xsd:sequence>
+            <xsd:element name="OrderConfirmationID" type="xsd:normalizedString" minOccurs="0" maxOccurs="unbounded" />
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="OrderConfirmationDetailsResponse">
+    <xsd:annotation>
+      <xsd:documentation>Response to the order confirmations query
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="vct:ResponseType">
+          <xsd:sequence>
+            <xsd:element ref="OrderConfirmation" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="UnknownID" type="xsd:normalizedString" minOccurs="0" maxOccurs="unbounded" />
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="DeliveryNoteQueryRequest">
+    <xsd:annotation>
+      <xsd:documentation>Request to query header data of delivery notes
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="vct:RequestType">
+          <xsd:sequence>
+            <xsd:element name="DateRange" type="DateRangeType" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="OrderID" type="xsd:normalizedString" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="OrderConfirmationID" type="xsd:normalizedString" minOccurs="0" maxOccurs="unbounded" />
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="DeliveryNoteQueryResponse">
+    <xsd:annotation>
+      <xsd:documentation>Header data of delivery notes</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="vct:ResponseType">
+          <xsd:sequence>
+            <xsd:element name="DateRange" type="DateRangeType" minOccurs="0" maxOccurs="1" />
+            <xsd:element ref="DeliveryNoteHeader" minOccurs="0" maxOccurs="unbounded" />
+          </xsd:sequence>
+
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="DeliveryNoteDetailsRequest">
+    <xsd:annotation>
+      <xsd:documentation>Request to query delivery notes
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="vct:RequestType">
+          <xsd:sequence>
+            <xsd:element name="DeliveryNoteID" type="xsd:normalizedString" minOccurs="1" maxOccurs="unbounded" />
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="DeliveryNoteDetailsResponse">
+    <xsd:annotation>
+      <xsd:documentation>Response to the delivery note query
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="vct:ResponseType">
+          <xsd:sequence>
+            <xsd:element ref="DeliveryNote" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="UnknownID" type="xsd:normalizedString" minOccurs="0" maxOccurs="unbounded" />
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="InvoiceInformationQueryRequest">
+    <xsd:annotation>
+      <xsd:documentation>Request to query header data of invoices
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="vct:RequestType">
+          <xsd:sequence>
+            <xsd:element name="DateRange" type="DateRangeType" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="OrderID" type="xsd:normalizedString" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="OrderConfirmationID" type="xsd:normalizedString" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="DeliveryNoteID" type="xsd:normalizedString" minOccurs="0" maxOccurs="unbounded" />
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="InvoiceInformationQueryResponse">
+    <xsd:annotation>
+      <xsd:documentation>Header data of invoices</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="vct:ResponseType">
+          <xsd:sequence>
+            <xsd:element name="DateRange" type="DateRangeType" minOccurs="0" maxOccurs="1" />
+            <xsd:element ref="InvoiceHeader" minOccurs="0" maxOccurs="unbounded" />
+          </xsd:sequence>
+
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="InvoiceInformationDetailsRequest">
+    <xsd:annotation>
+      <xsd:documentation>Request to query invoices
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="vct:RequestType">
+          <xsd:sequence>
+            <xsd:element name="InvoiceID" type="xsd:normalizedString" minOccurs="1" maxOccurs="unbounded" />
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="InvoiceInformationDetailsResponse">
+    <xsd:annotation>
+      <xsd:documentation>Response to the invoice query
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="vct:ResponseType">
+          <xsd:sequence>
+            <xsd:element ref="Invoice" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="UnknownID" type="xsd:normalizedString" minOccurs="0" maxOccurs="unbounded" />
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+
+
+  <xsd:element name="OfferHeader">
+    <xsd:annotation>
+      <xsd:documentation>Header data offer</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="OfferID" type="xsd:normalizedString" />
+        <xsd:element ref="cbc:IssueDate" minOccurs="1" maxOccurs="1" />
+        <xsd:element name="RequestReference" type="xsd:normalizedString" minOccurs="0" maxOccurs="1" />
+        <xsd:element name="RequestDate" type="cbc:DateType" minOccurs="0" maxOccurs="1" />
+        <xsd:element name="ValidRange" type="DateRangeType" minOccurs="0" maxOccurs="1" />
+        <xsd:element name="Description" type="xsd:normalizedString" minOccurs="0" maxOccurs="1" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+
+  <xsd:element name="OrderConfirmationHeader">
+    <xsd:annotation>
+      <xsd:documentation>Header data order confirmation
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="OrderConfirmationID" type="xsd:normalizedString" />
+        <xsd:element ref="cbc:IssueDate" minOccurs="1" maxOccurs="1" />
+        <xsd:element name="Description" type="xsd:normalizedString" minOccurs="0" maxOccurs="1" />
+        <xsd:element name="OrderID" type="xsd:normalizedString" minOccurs="0" maxOccurs="unbounded" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="DeliveryNoteHeader">
+    <xsd:annotation>
+      <xsd:documentation>Header data delivery note
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="DeliveryNoteID" type="xsd:normalizedString" />
+        <xsd:element ref="cbc:IssueDate" minOccurs="1" maxOccurs="1" />
+        <xsd:element name="Description" type="xsd:normalizedString" minOccurs="0" maxOccurs="1" />
+        <xsd:element name="OrderID" type="xsd:normalizedString" minOccurs="0" maxOccurs="unbounded" />
+        <xsd:element name="OrderConfirmationID" type="xsd:normalizedString" minOccurs="0" maxOccurs="unbounded" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+
+  <xsd:element name="InvoiceHeader">
+    <xsd:annotation>
+      <xsd:documentation>Header data invoice</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="InvoiceID" type="xsd:normalizedString" />
+        <xsd:element ref="cbc:IssueDate" minOccurs="1" maxOccurs="1" />
+        <xsd:element name="Description" type="xsd:normalizedString" minOccurs="0" maxOccurs="1" />
+        <xsd:element name="OrderID" type="xsd:normalizedString" minOccurs="0" maxOccurs="unbounded" />
+        <xsd:element name="OrderConfirmationID" type="xsd:normalizedString" minOccurs="0" maxOccurs="unbounded" />
+        <xsd:element name="DeliveryNoteID" type="xsd:normalizedString" minOccurs="0" maxOccurs="unbounded" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+
+
+  <xsd:element name="Offer">
+    <xsd:annotation>
+      <xsd:documentation>Offer</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="OfferID" type="xsd:normalizedString"/>
+        <xsd:element ref="cbc:IssueDate" minOccurs="1" maxOccurs="1" />
+        <xsd:element name="RequestDate" type="cbc:DateType" minOccurs="0" maxOccurs="1" />
+        <xsd:element name="RequestReference" type="xsd:normalizedString" minOccurs="0" maxOccurs="1" />
+        <xsd:element name="ValidRange" type="DateRangeType" minOccurs="0" maxOccurs="1" />
+        <xsd:element ref="cac:Party" minOccurs="0" maxOccurs="1" />
+        <xsd:element name="Description" type="xsd:normalizedString" minOccurs="0" maxOccurs="1" />
+        <xsd:element name="OfferURL" type="xsd:anyURI" minOccurs="0" maxOccurs="1" />
+        <xsd:element ref="cac:Item" minOccurs="1" maxOccurs="unbounded" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="OrderConfirmation">
+    <xsd:annotation>
+      <xsd:documentation>Order confirmation</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="OrderConfirmationID" type="xsd:normalizedString" />
+        <xsd:element ref="cbc:IssueDate" minOccurs="1" maxOccurs="1" />
+        <xsd:element name="Description" type="xsd:normalizedString" minOccurs="0" maxOccurs="1" />
+        <xsd:element ref="cac:Party" minOccurs="0" maxOccurs="1" />
+        <xsd:element ref="LineItem" minOccurs="1" maxOccurs="unbounded" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="DeliveryNote">
+    <xsd:annotation>
+      <xsd:documentation>Delivery note</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="DeliveryNoteID" type="xsd:normalizedString" />
+        <xsd:element ref="cbc:IssueDate" minOccurs="1" maxOccurs="1" />
+        <xsd:element name="Description" type="xsd:normalizedString" minOccurs="0" maxOccurs="1" />
+        <xsd:element name="TrackingURL" type="xsd:anyURI" minOccurs="0" maxOccurs="unbounded" />
+        <xsd:element ref="cac:Party" minOccurs="0" maxOccurs="1" />
+        <xsd:element ref="cac:DeliveryAddress" minOccurs="0" maxOccurs="1" />
+        <xsd:element ref="LineItem" minOccurs="1" maxOccurs="unbounded" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="Invoice">
+    <xsd:annotation>
+      <xsd:documentation>Invoice</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="InvoiceID" type="xsd:normalizedString" />
+        <xsd:element ref="cbc:IssueDate" minOccurs="1" maxOccurs="1" />
+        <xsd:element name="Description" type="xsd:normalizedString" minOccurs="0" maxOccurs="1" />
+        <xsd:element name="InvoiceURL" type="xsd:anyURI" minOccurs="0" maxOccurs="1" />
+        <xsd:element ref="cac:Party" minOccurs="0" maxOccurs="1" />
+        <xsd:element name="GrossSum" type="cbc:PriceAmountType" />
+        <xsd:element name="NetSum" type="cbc:PriceAmountType" />
+        <xsd:element name="VAT" type="cac:TaxSubTotalType" minOccurs="1" maxOccurs="unbounded"/>
+        <xsd:element ref="LineItem" minOccurs="1" maxOccurs="unbounded" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="LineItem">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="LineID" type="xsd:normalizedString" />
+        <xsd:element name="OrderID" type="LineReferenceType" minOccurs="0" maxOccurs="1" />
+        <xsd:element name="OrderConfirmationID" type="LineReferenceType" minOccurs="0" maxOccurs="1" />
+        <xsd:element name="DeliveryNoteID" type="LineReferenceType" minOccurs="0" maxOccurs="1" />
+        <xsd:element ref="cbc:DeliveryDate" minOccurs="0" maxOccurs="1" />
+        <xsd:element ref="cbc:Quantity" />
+        <xsd:element ref="cac:Item" />
+        <xsd:element ref="ItemInstance" minOccurs="0" maxOccurs="unbounded" />
+        <xsd:element name="UnitPrice" type="cbc:PriceAmountType">
+          <xsd:annotation>
+            <xsd:documentation>
+							UnitPrice : Unit price (net); the total price of this item is calculated as the product of  cac:Quantity with cac:UnitPrice, that means this price is related always to the unit to which cbc:Quantity refers.
+            </xsd:documentation>
+          </xsd:annotation>
+        </xsd:element>
+        <xsd:element name="LinePrice" type="cbc:PriceAmountType">
+          <xsd:annotation>
+            <xsd:documentation>Total price (net) of this item</xsd:documentation>
+          </xsd:annotation>
+        </xsd:element>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:complexType name="LineReferenceType">
+    <xsd:sequence>
+      <xsd:element name="ID" type="xsd:normalizedString"/>
+      <xsd:element name="LineID" type="xsd:normalizedString" minOccurs="0" maxOccurs="1" />
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="ItemInstance">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="SerialID" type="SerialIDType" minOccurs="0" maxOccurs="unbounded" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:complexType name="SerialIDType">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:normalizedString">
+        <xsd:attribute name="kind" type="SerialIDKind" use="required" />
+        <xsd:attribute name="description" type="xsd:normalizedString" use="optional" />
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:simpleType name="SerialIDKind">
+    <xsd:restriction base="xsd:normalizedString">
+      <xsd:enumeration value="FrameNumber">
+        <xsd:annotation>
+          <xsd:documentation>
+FrameNumber: frame number.
+The frame number is an alphanumeric code that is attached to the frame via an engraving or label, often in the bottom bracket or steering head area. Due to redundancies, the frame number is not recommended as a unique identifier.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="SerialNumber">
+        <xsd:annotation>
+          <xsd:documentation>
+SerialNumber: serial number.
+The specific serial number of the entire vehicle. It is often attached to the frame by the manufacturer using a label and normally allows at least a manufacturer-specific, unique assignment. 				</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="SerialNumberDisplay">
+        <xsd:annotation>
+          <xsd:documentation>
+SerialNumberDisplay: serial number of display.
+A serial number for Pedelecs and S-Pedelecs for the built-in display (usually on the handlebars).			</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="SerialNumberBattery">
+        <xsd:annotation>
+          <xsd:documentation>
+SerialNumberBattery: Serial number of batteries in electric vehicles. 
+For vehicles with more than 1 battery, a corresponding identification must be made in the "description" attribute of SerialID. (So e.g. "Battery down tube" / "Battery top tube" or also "Battery 1" / "Battery 2".
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="SerialNumberMotor">
+        <xsd:annotation>
+          <xsd:documentation>
+SerialNumberMotor:
+Serial number of the motor on electric vehicles.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="SerialNumberGearHub">
+        <xsd:annotation>
+          <xsd:documentation>
+SerialNumberGearHub: Serial number of the gear hub.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="KeyNumberFrameLock">
+        <xsd:annotation>
+          <xsd:documentation>
+KeyNumberFrameLock:
+Key number for locks that are permanently mounted on the frame.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="KeyNumberBattery">
+        <xsd:annotation>
+          <xsd:documentation>
+KeyNumberBattery:
+The key number with which the locks for the batteries or battery holders are identified in electric vehicles.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Other">
+        <xsd:annotation>
+          <xsd:documentation>
+Other:
+For other serial numbers that are not included in the above Values are to be classified. The exact definition of what type of serial number is involved must be entered in the description attribute of SerialID.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="DateRangeType">
+    <xsd:sequence>
+      <xsd:element name="FromDate" type="cbc:DateType" minOccurs="0" maxOccurs="1" />
+      <xsd:element name="ThruDate" type="cbc:DateType" minOccurs="0" maxOccurs="1" />
+    </xsd:sequence>
+  </xsd:complexType>
+
+</xsd:schema>

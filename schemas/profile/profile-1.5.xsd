@@ -1,0 +1,406 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- 
+****************************************************************************** 
+Copyright (C) Verbund Service und Fahrrad e. V. (2019)
+
+Dieses Dokument, sowie Übersetzungen desselben, dürfen uneingeschränkt kopiert
+und verteilt werden, vorausgesetzt, der obige Urheberrechtshinweis und diese
+und die folgenden Bestimmungen sind in jeder Kopie enthalten.
+
+Veränderungen, die über die Erfordernisse einer Übersetzung hinausgehen, sind
+nur erlaubt, wenn die veränderte Version nicht den Namen veloconnect benützt
+und deutliche Hinweise darauf enthält, dass diese geänderte Version auf der
+veloconnect-Spezifikation beruht und inhaltliche Veränderungen vorgenommen
+worden sind. Ferner ist der Urheber dieser Modifikationen zu benennen.
+
+Zweck dieser Spezifikation ist die Implementierung von Software. Der Urheber
+dieser Spezifikation weist ausdrücklich darauf hin, dass sich aus dem
+Urheberrecht an dieser Spezifikation keinerlei Rechte an diesen
+Implementierungen ableiten und umgekehrt aus den Implementierungen keinerlei
+Ansprüche an den Urheber der Spezifikation entstehen. Insbesondere übernimmt
+der Urheber dieser Spezifikation keinerlei Verantwortung für die Konformität
+einer Implementierung zur veloconnect-Spezifikation und verlangt auch keine
+Lizenzgebühren für die Benutzung der Spezifikation.
+
+Der Urheber übernimmt keinerlei Gewährleistung, insbesondere nicht dafür, dass
+diese Spezifikation fehlerfrei oder für einen bestimmten Zweck geeignet
+ist. Die hiermit gewährten Rechte sind unwiderruflich.
+****************************************************************************** 
+-->
+
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns="urn:veloconnect:profile-1.5"
+  xmlns:vct="urn:veloconnect:transaction-1.0"
+  xmlns:udt="urn:oasis:names:specification:ubl:schema:xsd:UnspecializedDatatypes-1.0" targetNamespace="urn:veloconnect:profile-1.5" elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+  <xsd:import namespace="urn:oasis:names:specification:ubl:schema:xsd:UnspecializedDatatypes-1.0" schemaLocation="ubl/common/UBL-UnspecializedDatatypes-1.0.xsd"/>
+  <xsd:import namespace="urn:veloconnect:transaction-1.0" schemaLocation="transaction-1.0.xsd"/>
+
+  <xsd:element name="GetProfileRequest" type="vct:RequestType">
+    <xsd:annotation>
+      <xsd:documentation>
+        Request to determine the capabilities of the server.
+        Every Veloconnect-compliant server must be able to process this request.
+      </xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+
+  <xsd:element name="GetProfileResponse">
+    <xsd:annotation>
+      <xsd:documentation>Response to GetProfileRequest.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="vct:ResponseType">
+          <xsd:sequence>
+            <xsd:element name="SellerName" type="udt:TextType" maxOccurs="1" minOccurs="0" />
+            <xsd:element name="Message" type="udt:TextType" maxOccurs="1" minOccurs="0" />
+            <xsd:element ref="VeloconnectProfile" />
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="VeloconnectProfile">
+    <xsd:annotation>
+      <xsd:documentation>Information about the capabilities of the server.
+The implements elements provide information about the supported
+Transactions.
+The property elements contain some for implementation
+specific
+Information as key / value pairs.
+UnsupportedQuery and SpecialRequestReference relate to receipt management.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="Implements" type="ImplementsType" minOccurs="0" maxOccurs="unbounded" />
+        <xsd:element name="Property" type="PropertyType" minOccurs="0" maxOccurs="unbounded" />
+        <xsd:element name="UnsupportedQuery" type="UnsupportedQueryType" minOccurs="0" maxOccurs="unbounded" />
+        <xsd:element name="SpecialRequestReference" type="RequestReferenceType" minOccurs="0" maxOccurs="unbounded" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:complexType name="ImplementsType">
+    <xsd:annotation>
+      <xsd:documentation>Information about implemented operations and
+Transactions, as well as supported bindings. The information about
+a
+supported transaction apply to all operations of this transaction.
+A specification for URI is only required if this operation or
+Transaction can be addressed under a different URL.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:choice>
+        <xsd:element name="Transaction" type="TransactionType" />
+        <xsd:element name="Operation" type="OperationType" />
+      </xsd:choice>
+      <xsd:element name="Binding" type="BindingType" />
+      <xsd:element name="URI" type="xsd:anyURI" minOccurs="0" maxOccurs="1" />
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="PropertyType">
+    <xsd:annotation>
+      <xsd:documentation>Property of the server implementation</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="Key" type="PropertyKeyType"/>
+      <xsd:element name="Value" type="xsd:normalizedString"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="RequestReferenceType">
+    <xsd:annotation>
+      <xsd:documentation>Special references for querying offers.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="RequestReference" type="xsd:normalizedString"/>
+      <xsd:element name="Description" type="xsd:normalizedString"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:simpleType name="OperationType">
+    <xsd:annotation>
+      <xsd:documentation>List of operations.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:normalizedString">
+      <xsd:enumeration value="GetStatus">
+        <xsd:annotation>
+          <xsd:documentation>GetStatus</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Rollback">
+        <xsd:annotation>
+          <xsd:documentation>Rollback</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="GetItemDetails">
+        <xsd:annotation>
+          <xsd:documentation>GetItemDetails</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="GetItemDetailsList">
+        <xsd:annotation>
+          <xsd:documentation>GetItemDetailsList</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="GetClassificationScheme">
+        <xsd:annotation>
+          <xsd:documentation>GetClassificationScheme</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="OfferQuery">
+        <xsd:annotation>
+          <xsd:documentation>OfferQuery</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="OfferDetails">
+        <xsd:annotation>
+          <xsd:documentation>OfferDetails</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="OrderConfirmationQuery">
+        <xsd:annotation>
+          <xsd:documentation>OrderConfirmationQuery</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="OrderConfirmationDetails">
+        <xsd:annotation>
+          <xsd:documentation>OrderDetails</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="DeliveryNoteQuery">
+        <xsd:annotation>
+          <xsd:documentation>DeliveryNoteQuery</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="DeliveryNoteDetails">
+        <xsd:annotation>
+          <xsd:documentation>DeliveryNoteDetails</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="InvoiceInformationQuery">
+        <xsd:annotation>
+          <xsd:documentation>InvoiceInformationQuery</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="InvoiceInformationDetails">
+        <xsd:annotation>
+          <xsd:documentation>InvoiceInformationDetails</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="StockTransmitB2B">
+        <xsd:annotation>
+          <xsd:documentation>StockTransmitB2B</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="StockTransmitB2C">
+        <xsd:annotation>
+          <xsd:documentation>StockTransmitB2C</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="TransactionType">
+    <xsd:annotation>
+      <xsd:documentation>List of transactions.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:normalizedString">
+      <xsd:enumeration value="Order">
+        <xsd:annotation>
+          <xsd:documentation>Order</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="OrderInOnlineShop">
+        <xsd:annotation>
+          <xsd:documentation>OrderInOnlineShop</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="TextSearch">
+        <xsd:annotation>
+          <xsd:documentation>Volltextsuche</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="StockTransmitB2B">
+        <xsd:annotation>
+          <xsd:documentation xml:lang="de">Bestandsmitteilung an Großhändler / Lieferanten</xsd:documentation>
+          <xsd:documentation xml:lang="en">Stock transmit</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="StockTransmitB2C">
+        <xsd:annotation>
+          <xsd:documentation xml:lang="de">Bestandsmitteilung an Marketplaces</xsd:documentation>
+          <xsd:documentation xml:lang="en">Stock transmit</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="BindingType">
+    <xsd:annotation>
+      <xsd:documentation>List of bindings</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:normalizedString">
+      <xsd:enumeration value="URL">
+        <xsd:annotation>
+          <xsd:documentation>
+					URL: request via http (GET or POST),
+Parameter as a query string.
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="URL-S">
+        <xsd:annotation>
+          <xsd:documentation>URL-S : Like URL only with https.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="XML-POST">
+        <xsd:annotation>
+          <xsd:documentation>XML-POST: Request is transmitted as an XML document via http (POST).</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="XML-POST-S">
+        <xsd:annotation>
+          <xsd:documentation>XML-POST-S: Like POST, only with https.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="PropertyKeyType">
+    <xsd:annotation>
+      <xsd:documentation>Possible properties of the server implementation.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:normalizedString">
+      <xsd:enumeration value="RecommendedRetailPrice.Netto">
+        <xsd:annotation>
+          <xsd:documentation>RecommendedRetailPrice.Netto: Indicator whether the recommended sales prices are given as net prices.
+Possible values:
+false (recommended retail price is gross),
+true (recommended retail price is net)</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="quantityUnitCode.EA">
+        <xsd:annotation>
+          <xsd:documentation>quantityUnitCode.EA: Indicator whether pieces are used as a unit only.
+Possible values: false, true</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="OrderInOnlineShop.TransactionID">
+        <xsd:annotation>
+          <xsd:documentation>OrderInOnlineShop.TransactionID: Fixed TransactionID for using the OrderInOnlineShop transaction.
+Must be specified if this transaction is supported.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Order.DeliveryDate">
+        <xsd:annotation>
+          <xsd:documentation>Order.DeliveryDate: Indicator whether scheduled orders are possible.
+Values:
+false: not possible
+order: only one date for the whole order
+line: date can be set individually for each order line </xsd:documentation>
+
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Order.Availability">
+        <xsd:annotation>
+          <xsd:documentation>Order.Availability: Indicator whether information on the
+Availability to be made available.
+Values:
+true: basically information on availability
+false: basically no information on availability</xsd:documentation>
+
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Order.Backlog">
+        <xsd:annotation>
+          <xsd:documentation>Order.Backlog: Indicator of how the subsequent delivery
+can be controlled. Possible values:
+false: not possible
+order: subsequent delivery behavior can only be set for the order
+line: Subsequent delivery behavior can be set individually for each order line</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Order.BacklogDefault">
+        <xsd:annotation>
+          <xsd:documentation>Order.BacklogDefault: Basic behavior in the case of non-deliverable articles.
+Values:
+false: no subsequent delivery
+true: subsequent delivery</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Order.ExpectingDelivery">
+        <xsd:annotation>
+          <xsd:documentation>Order.ExpectingDelivery: Period within which a delivery can be expected;
+Value: number (number of days)</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Catalog.ItemInformation.ProductData">
+        <xsd:annotation>
+          <xsd:documentation>Catalog.ItemInformation.ProductData: Indicator whether this server can possibly send the product_data element of v1.5 in ItemInformation.
+Values:
+false: This server will not send the product_data element in ItemInformation (default)
+true: This server can possibly send the product_data element in ItemInformation</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="UnsupportedQueryType">
+    <xsd:annotation>
+      <xsd:documentation>Search parameters for each receipt.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:normalizedString">
+      <xsd:enumeration value="OrderConfirmation-OrderID">
+        <xsd:annotation>
+          <xsd:documentation>
+						OrderID in OrderConfirmationQueryRequest
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="DeliveryNote-OrderID">
+        <xsd:annotation>
+          <xsd:documentation>
+						OrderID in DeliveryNoteQueryRequest
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Invoice-OrderID">
+        <xsd:annotation>
+          <xsd:documentation>
+						OrderID in InvoiceInformationQueryRequest
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="DeliveryNote-OrderConfirmationID">
+        <xsd:annotation>
+          <xsd:documentation>
+						OrderConfirmationID in DeliveryNoteQueryRequest
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Invoice-OrderConfirmationID">
+        <xsd:annotation>
+          <xsd:documentation>
+						OrderConfirmationID in InvoiceInformationQueryRequest
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Invoice-DeliveryNoteID">
+        <xsd:annotation>
+          <xsd:documentation>
+						DeliveryNoteID in InvoiceInformationQueryRequest
+          </xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+
+</xsd:schema>

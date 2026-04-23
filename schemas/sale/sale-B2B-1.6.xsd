@@ -1,0 +1,157 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns="urn:veloconnect:sale-B2B-1.6"
+  xmlns:vct="urn:veloconnect:transaction-1.0"
+  xmlns:sle="urn:veloconnect:sale-1.6"
+  xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-1.0"
+  xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-1.0"
+  xmlns:vcr="urn:veloconnect:receipt-1.3" targetNamespace="urn:veloconnect:sale-B2B-1.6" elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+  <xsd:import namespace="urn:veloconnect:transaction-1.0" schemaLocation="transaction-1.0.xsd" />
+  <xsd:import namespace="urn:veloconnect:receipt-1.3" schemaLocation="receipt-1.3.xsd" />
+  <xsd:import namespace="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-1.0" schemaLocation="ubl/common/UBL-CommonBasicComponents-1.0.xsd" />
+  <xsd:import namespace="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-1.0" schemaLocation="ubl/common/UBL-CommonAggregateComponents-1.0.xsd" />
+  <xsd:import namespace="urn:veloconnect:sale-1.6" schemaLocation="sale-1.6.xsd" />
+
+  <xsd:element name="SaleTransmitB2BRequest">
+    <xsd:annotation>
+      <xsd:documentation>
+				Request to transmit sales to supplier
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="vct:RequestType">
+          <xsd:sequence>
+            <xsd:element name="CreateDate" type="cbc:DateTimeType" minOccurs="1" maxOccurs="1" />
+            <xsd:element maxOccurs="unbounded" minOccurs="1" ref="SaleTransmitB2BLine"/>
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="SaleTransmitB2BLine">
+    <xsd:annotation>
+      <xsd:documentation>
+				The ID, the SellersItemIdentification, the QuantityFraction and the SaleDate are mandatory, all other elemements are optional.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element maxOccurs="1" minOccurs="1" name="ID" type="xsd:normalizedString"/>
+        <!-- die Nummer des Sellers hier des Lieferanten (hat zwar eine Party, die wird hier aber nicht benötigt) -->
+        <xsd:element maxOccurs="1" minOccurs="1" ref="cac:SellersItemIdentification"/>
+        <!-- Die Artikelnummer des Einzelhändlers  (hat zwar eine Party, die wird hier aber nicht benötigt)-->
+        <xsd:element maxOccurs="1" minOccurs="0" ref="cac:BuyersItemIdentification"/>
+        <xsd:element maxOccurs="1" minOccurs="1" name="QuantityFraction" type="QuantityFractionType"/>
+        <xsd:element maxOccurs="1" minOccurs="1" name="SaleDate" type="cbc:DateTimeType"/>
+        <xsd:element maxOccurs="1" minOccurs="0" name="DocumentNumber" type="xsd:normalizedString"/>
+        <xsd:element maxOccurs="1" minOccurs="0" name="SalesPriceGross" type="cbc:PriceAmountType"/>
+        <xsd:element maxOccurs="1" minOccurs="0" name="SalesPriceNet" type="cbc:PriceAmountType"/>
+        <xsd:element maxOccurs="1" minOccurs="0" name="PostalCode" type="cbc:ZoneType"/>
+        <xsd:element maxOccurs="1" minOccurs="0" ref="SerialNumbers"/>
+        <xsd:element maxOccurs="1" minOccurs="0" name="SalesChannel" type="sle:SalesChannelType"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:simpleType name="QuantityFractionType">
+    <xsd:restriction base="xsd:decimal">
+      <xsd:fractionDigits fixed="true" value="4" />
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:element name="SerialNumbers">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="SerialID" minOccurs="0" maxOccurs="unbounded" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="SerialID">
+    <xsd:complexType>
+      <xsd:simpleContent>
+        <xsd:extension base="xsd:normalizedString">
+          <xsd:attribute name="kind" type="vcr:SerialIDKind" use="required" />
+          <xsd:attribute name="description" type="xsd:normalizedString" use="optional" />
+        </xsd:extension>
+      </xsd:simpleContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="SaleTransmitB2BResponse">
+    <xsd:annotation>
+      <xsd:documentation>
+				Response containing the state, if the sales are imported successfully.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="vct:TransactionResponseType">
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="GetStatusSaleTransmitB2BRequest">
+    <xsd:annotation>
+      <xsd:documentation>Pick up the results of SaleTransmitB2BResponse.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="vct:TransactionRequestType">
+          <xsd:sequence>
+            <xsd:element name="StartIndex" type="xsd:integer"/>
+            <xsd:element name="Count" type="xsd:integer"/>
+            <xsd:element name="DoNotClose" type="xsd:boolean" minOccurs="0" maxOccurs="1"/>
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="GetStatusSaleTransmitB2BResponse">
+    <xsd:annotation>
+      <xsd:documentation>Return the results of GetStatusSaleTransmitB2BRequest.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="vct:TransactionResponseType">
+          <xsd:sequence>
+            <xsd:element name="StartIndex" type="xsd:integer"/>
+            <xsd:element name="Count" type="xsd:integer"/>
+            <xsd:element name="TotalCount" type="xsd:integer"/>
+            <xsd:choice minOccurs="0" maxOccurs="1">
+              <xsd:sequence>
+                <xsd:element ref="SaleTransmitB2BResponseLine" minOccurs="1" maxOccurs="unbounded" />
+              </xsd:sequence>
+
+            </xsd:choice>
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="SaleTransmitB2BResponseLine">
+    <xsd:annotation>
+      <xsd:documentation>
+				Result of GetStatusSaleTransmitB2BResponse
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element maxOccurs="1" minOccurs="1" name="ID" type="xsd:normalizedString"/>
+        <!-- die Nummer des Sellers hier des Lieferanten (hat zwar eine Party, die wird hier aber nicht benötigt) -->
+        <xsd:element maxOccurs="1" minOccurs="1" ref="cac:SellersItemIdentification"/>
+        <!-- Die Artikelnummer des Einzelhändlers  (hat zwar eine Party, die wird hier aber nicht benötigt)-->
+        <xsd:element maxOccurs="1" minOccurs="0" ref="cac:BuyersItemIdentification"/>
+        <xsd:element maxOccurs="1" minOccurs="1" name="QuantityFraction" type="QuantityFractionType"/>
+        <xsd:element maxOccurs="1" minOccurs="1" name="SaleDate" type="cbc:DateTimeType"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+</xsd:schema>

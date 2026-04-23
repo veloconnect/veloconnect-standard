@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- ****************************************************************************** Copyright (C) Verbund Service und Fahrrad e. V. (2005-2019) Dieses Dokument, sowie Übersetzungen desselben, dürfen uneingeschränkt kopiert und verteilt werden, vorausgesetzt, der obige Urheberrechtshinweis und diese und die folgenden Bestimmungen sind in jeder Kopie enthalten. Veränderungen, die über die Erfordernisse einer Übersetzung hinausgehen, sind nur erlaubt, wenn die veränderte Version nicht den Namen veloconnect benützt und deutliche Hinweise darauf enthält, dass diese geänderte Version auf der veloconnect-Spezifikation beruht und inhaltliche Veränderungen vorgenommen worden sind. Ferner ist der Urheber dieser Modifikationen zu benennen. Zweck dieser Spezifikation ist die Implementierung von Software. Der Urheber dieser Spezifikation weist ausdrücklich darauf hin, dass sich aus dem Urheberrecht an dieser Spezifikation keinerlei Rechte an diesen Implementierungen ableiten und umgekehrt aus den Implementierungen keinerlei Ansprüche an den Urheber der Spezifikation entstehen. Insbesondere übernimmt der Urheber dieser Spezifikation keinerlei Verantwortung für die Konformität einer Implementierung zur veloconnect-Spezifikation und verlangt auch keine Lizenzgebühren für die Benutzung der Spezifikation. Der Urheber übernimmt keinerlei Gewährleistung, insbesondere nicht dafür, dass diese Spezifikation fehlerfrei oder für einen bestimmten Zweck geeignet ist. Die hiermit gewährten Rechte sind unwiderruflich. ****************************************************************************** -->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns="urn:veloconnect:order-1.1"
+  xmlns:vct="urn:veloconnect:transaction-1.0"
+  xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-1.0"
+  xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-1.0" targetNamespace="urn:veloconnect:order-1.1" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xsd:import namespace="urn:veloconnect:transaction-1.0" schemaLocation="transaction-1.0.xsd"/>
+  <xsd:import namespace="urn:oasis:names:specification:ubl:schema:xsd:UnspecializedDatatypes-1.0" schemaLocation="ubl/common/UBL-UnspecializedDatatypes-1.0.xsd" />
+  <xsd:import namespace="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-1.0" schemaLocation="ubl/common/UBL-CommonBasicComponents-1.0.xsd"/>
+  <xsd:import namespace="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-1.0" schemaLocation="ubl/common/UBL-CommonAggregateComponents-1.0.xsd" />
+  <xsd:element name="CreateOrderRequest">
+    <xsd:annotation>
+      <xsd:documentation>Request to start an Order or OrderInOnlineShop transaction. If successful: change to state 2.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="vct:RequestType">
+          <xsd:sequence>
+            <xsd:element ref="OrderRequestLine" minOccurs="1" maxOccurs="unbounded"/>
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="UpdateOrderRequest">
+    <xsd:annotation>
+      <xsd:documentation>Request to change an order, only permissible in state 2. State remains unchanged.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="vct:TransactionRequestType">
+          <xsd:sequence>
+            <xsd:element ref="OrderRequestLine" minOccurs="1" maxOccurs="unbounded"/>
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="ViewOrderRequest" type="vct:TransactionRequestType">
+    <xsd:annotation>
+      <xsd:documentation>Request to view the current order, only permissible in state 2 and 100.</xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+  <xsd:element name="FinishOrderRequest" type="vct:TransactionRequestType">
+    <xsd:annotation>
+      <xsd:documentation>Request to send the order,  only permissible in state 2. If successful: change to state 100.</xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+  <xsd:element name="GetItemDetailsRequest">
+    <xsd:annotation>
+      <xsd:documentation>Request to query item details. The optional specification of the quantity is taken into account when specifying the availability.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="vct:RequestType">
+          <xsd:sequence>
+            <xsd:element ref="cac:SellersItemIdentification"/>
+            <xsd:element ref="cbc:Quantity" minOccurs="0" maxOccurs="1"/>
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="GetItemDetailsListRequest">
+    <xsd:annotation>
+      <xsd:documentation>Request to query multiple product details. The optional specification of the quantity is taken into account when specifying the availability.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="vct:RequestType">
+          <xsd:sequence>
+            <xsd:element ref="RequestEntry" minOccurs="1" maxOccurs="unbounded"/>
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="OrderResponse">
+    <xsd:annotation>
+      <xsd:documentation>Response to a request within an Order or OrderInOnlineShop transaction. The lines of the order are returned, as well as optional replacement suggestions for obsolete article labels.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="vct:TransactionResponseType">
+          <xsd:sequence>
+            <xsd:element ref="OrderResponseLine" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element ref="RequestReplacement" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element ref="ItemUnknown" minOccurs="0" maxOccurs="unbounded"/>
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="FinalOrderResponse">
+    <xsd:annotation>
+      <xsd:documentation>Response to FinishOrderRequest.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="vct:TransactionResponseType">
+          <xsd:sequence>
+            <xsd:element ref="OrderHeader"/>
+            <xsd:element ref="OrderResponseLine" minOccurs="0" maxOccurs="unbounded"/>
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="OrderHeader">
+    <xsd:annotation>
+      <xsd:documentation>General information to an order</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="OrderID" type="xsd:normalizedString"/>
+        <xsd:element ref="cbc:IssueDate"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="OrderRequestLine">
+    <xsd:annotation>
+      <xsd:documentation>Line of an order for use in an request: -Identification of the article (usually order number) -optional: item number of the buyer -optional: desired delivery date -optional: Indication of whether subsequent delivery is desired</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="cac:SellersItemIdentification"/>
+        <xsd:element ref="cbc:Quantity"/>
+        <xsd:element ref="cac:BuyersItemIdentification" minOccurs="0" maxOccurs="1" />
+        <xsd:element ref="cbc:DeliveryDate" minOccurs="0" maxOccurs="1"/>
+        <xsd:element ref="cbc:BacklogIndicator" minOccurs="0" maxOccurs="1"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="RequestReplacement">
+    <xsd:annotation>
+      <xsd:documentation>Proposal for replacement items, if e.g. obsolete article numbers are used.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="cac:SellersItemIdentification"/>
+        <xsd:element ref="cac:ItemReplacement" minOccurs="1" maxOccurs="unbounded"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="ItemUnknown">
+    <xsd:annotation>
+      <xsd:documentation>The specified SellersItemIdentification is unknown.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="cac:SellersItemIdentification"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="Availability" type="AvailabilityType"/>
+  <xsd:element name="ItemDetail">
+    <xsd:complexType>
+      <xsd:choice maxOccurs="1" minOccurs="1">
+        <xsd:sequence>
+          <xsd:element ref="cac:Item" minOccurs="1" maxOccurs="1"/>
+          <xsd:element ref="Availability" minOccurs="0" maxOccurs="1"/>
+        </xsd:sequence>
+        <xsd:element ref="RequestReplacement"/>
+        <xsd:element ref="ItemUnknown"/>
+      </xsd:choice>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="RequestEntry">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="cac:SellersItemIdentification"/>
+        <xsd:element ref="cbc:Quantity" minOccurs="0" maxOccurs="1"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:complexType name="AvailabilityType">
+    <xsd:annotation>
+      <xsd:documentation>Information on the availability of an article</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="Code" type="AvailabilityCodeType" />
+      <xsd:element name="AvailableQuantity" type="cbc:QuantityType" minOccurs="0" maxOccurs="1" />
+      <xsd:element name="ExpectedDeliveryDate" type="cbc:DateType" minOccurs="0" maxOccurs="1" />
+      <xsd:element ref="cac:ItemReplacement" minOccurs="0" maxOccurs="unbounded" />
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:simpleType name="AvailabilityCodeType">
+    <xsd:annotation>
+      <xsd:documentation>Classification of the availability:</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:normalizedString">
+      <xsd:enumeration value="available">
+        <xsd:annotation>
+          <xsd:documentation>available : available</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="partially_available">
+        <xsd:annotation>
+          <xsd:documentation>partially_available : Partial quantities are available</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="expecting_delivery">
+        <xsd:annotation>
+          <xsd:documentation>expecting_delivery : Delivery is expected</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="not_available">
+        <xsd:annotation>
+          <xsd:documentation>not_available : not available, no further information possible</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:element name="GetItemDetailsResponse">
+    <xsd:annotation>
+      <xsd:documentation>Response to GetItemDetailsRequest :  Information about the article and availability.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="vct:ResponseType">
+          <xsd:choice maxOccurs="1" minOccurs="1">
+            <xsd:sequence>
+              <xsd:element ref="cac:Item" minOccurs="1" maxOccurs="1"/>
+              <xsd:element ref="Availability" minOccurs="0" maxOccurs="1"/>
+            </xsd:sequence>
+            <xsd:element ref="RequestReplacement"/>
+            <xsd:element ref="ItemUnknown"/>
+          </xsd:choice>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="GetItemDetailsListResponse">
+    <xsd:annotation>
+      <xsd:documentation>Antwort auf GetItemDetailsListRequest : Liste mit Angaben zum Artikel und zur Lieferbarkeit.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="vct:ResponseType">
+          <xsd:sequence>
+            <xsd:element ref="ItemDetail" minOccurs="1" maxOccurs="unbounded" />
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="OrderResponseLine">
+    <xsd:annotation>
+      <xsd:documentation>Line of an order to use in a response</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="cbc:Quantity">
+          <xsd:annotation>
+            <xsd:documentation>Order Quantity</xsd:documentation>
+          </xsd:annotation>
+        </xsd:element>
+        <xsd:element ref="cac:Item"/>
+        <xsd:element ref="cac:UnitPrice">
+          <xsd:annotation>
+            <xsd:documentation>UnitPrice : Unit price (net); the total price of this item is calculated as the product of  cac:Quantity with cac:UnitPrice, that means this price is related always to the unit to which cbc:Quantity refers.</xsd:documentation>
+          </xsd:annotation>
+        </xsd:element>
+        <xsd:element ref="Availability" minOccurs="0" maxOccurs="1"/>
+        <xsd:element ref="cbc:DeliveryDate" minOccurs="0" maxOccurs="1"/>
+        <xsd:element ref="cbc:BacklogIndicator" minOccurs="0" maxOccurs="1"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+</xsd:schema>

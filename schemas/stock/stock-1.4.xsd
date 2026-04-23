@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns="urn:veloconnect:stock-1.4" targetNamespace="urn:veloconnect:stock-1.4" elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+  <xsd:simpleType name="FrequenceType">
+    <xsd:annotation>
+      <xsd:documentation>Is the stockl transmission complete or incremental</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:normalizedString">
+      <xsd:enumeration value="Complete">
+        <xsd:annotation>
+          <xsd:documentation>complete</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="Incremental">
+        <xsd:annotation>
+          <xsd:documentation>incremental</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="AvailabilityType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="Available">
+        <xsd:annotation>
+          <xsd:documentation xml:lang="de">Artikel ist verfügbar</xsd:documentation>
+          <xsd:documentation xml:lang="en">stock is available</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="LimitedAvailable">
+        <xsd:annotation>
+          <xsd:documentation xml:lang="de">article is restricted available</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="NotAvailable">
+        <xsd:annotation>
+          <xsd:documentation xml:lang="de">article is not available</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+    </xsd:restriction>
+  </xsd:simpleType>
+</xsd:schema>

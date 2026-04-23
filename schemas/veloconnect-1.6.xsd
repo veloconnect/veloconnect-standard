@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+******************************************************************************
+Copyright (C) Verbund Service und Fahrrad e. V. (2005-2019)
+
+Dieses Dokument, sowie Übersetzungen desselben, dürfen uneingeschränkt kopiert
+und verteilt werden, vorausgesetzt, der obige Urheberrechtshinweis und diese
+und die folgenden Bestimmungen sind in jeder Kopie enthalten.
+
+Veränderungen, die über die Erfordernisse einer Übersetzung hinausgehen, sind
+nur erlaubt, wenn die veränderte Version nicht den Namen veloconnect benützt
+und deutliche Hinweise darauf enthält, dass diese geänderte Version auf der
+veloconnect-Spezifikation beruht und inhaltliche Veränderungen vorgenommen
+worden sind. Ferner ist der Urheber dieser Modifikationen zu benennen.
+
+Zweck dieser Spezifikation ist die Implementierung von Software. Der Urheber
+dieser Spezifikation weist ausdrücklich darauf hin, dass sich aus dem
+Urheberrecht an dieser Spezifikation keinerlei Rechte an diesen
+Implementierungen ableiten und umgekehrt aus den Implementierungen keinerlei
+Ansprüche an den Urheber der Spezifikation entstehen. Insbesondere übernimmt
+der Urheber dieser Spezifikation keinerlei Verantwortung für die Konformität
+einer Implementierung zur veloconnect-Spezifikation und verlangt auch keine
+Lizenzgebühren für die Benutzung der Spezifikation.
+
+Der Urheber übernimmt keinerlei Gewährleistung, insbesondere nicht dafür, dass
+diese Spezifikation fehlerfrei oder für einen bestimmten Zweck geeignet
+ist. Die hiermit gewährten Rechte sind unwiderruflich.
+******************************************************************************
+-->
+
+<!-- Diese Schemadatei definiert kein Schema sondern importiert alle 
+erforderlichen Schemadateien der veloconnect Spezifikation 1.6 -->
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+  <xsd:import namespace="urn:oasis:names:specification:ubl:schema:xsd:UnspecializedDatatypes-1.0" schemaLocation="ubl/common/UBL-UnspecializedDatatypes-1.0.xsd" />
+  <xsd:import namespace="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-1.0" schemaLocation="ubl/common/UBL-CommonBasicComponents-1.0.xsd"/>
+  <xsd:import namespace="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-1.0" schemaLocation="ubl/common/UBL-CommonAggregateComponents-1.0.xsd" />
+  <xsd:import namespace="urn:veloconnect:transaction-1.6" schemaLocation="transaction-1.6.xsd" />
+  <xsd:import namespace="urn:veloconnect:order-1.1" schemaLocation="order-1.1.xsd" />
+  <xsd:import namespace="urn:veloconnect:catalog-1.5" schemaLocation="catalog-1.5.xsd" />
+  <xsd:import namespace="urn:veloconnect:profile-1.6" schemaLocation="profile-1.6.xsd"/>
+  <xsd:import namespace="urn:veloconnect:receipt-1.3" schemaLocation="receipt-1.3.xsd"/>
+  <xsd:import namespace="urn:veloconnect:stock-1.4" schemaLocation="stock-1.4.xsd"/>
+  <xsd:import namespace="urn:veloconnect:stock-B2B-1.4" schemaLocation="stock-B2B-1.4.xsd"/>
+  <xsd:import namespace="urn:veloconnect:stock-B2C-1.4" schemaLocation="stock-B2C-1.4.xsd"/>
+  <xsd:import namespace="urn:veloconnect:sale-1.6" schemaLocation="sale-1.6.xsd"/>
+  <xsd:import namespace="urn:veloconnect:sale-B2B-1.6" schemaLocation="sale-B2B-1.6.xsd"/>
+  <xsd:import namespace="urn:veloconnect:sale-B2X-1.6" schemaLocation="sale-B2X-1.6.xsd"/>
+
+</xsd:schema>

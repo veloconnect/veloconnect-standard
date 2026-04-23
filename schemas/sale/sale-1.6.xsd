@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns="urn:veloconnect:sale-1.6" targetNamespace="urn:veloconnect:sale-1.6" elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+  <xsd:simpleType name="SalesChannelType">
+    <xsd:annotation>
+      <xsd:documentation>The sales channel</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:normalizedString">
+      <xsd:enumeration value="RETAIL">
+        <xsd:annotation>
+          <xsd:documentation>RETAIL: The sale happend in a retail store.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="ONLINE">
+        <xsd:annotation>
+          <xsd:documentation>ONLINE: The sale happend via an online service (e.g. a webshop).</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="LEASING">
+        <xsd:annotation>
+          <xsd:documentation>LEASING: The artile was sold via leasing</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="PARTNER">
+        <xsd:annotation>
+          <xsd:documentation>PARTNER: The article was sold via a partner</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="BidexProductGroupKeyType">
+    <xsd:annotation>
+      <xsd:documentation>The BIDEX group key</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:integer">
+      <xsd:totalDigits value="6"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+</xsd:schema>

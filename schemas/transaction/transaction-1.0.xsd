@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+******************************************************************************
+Copyright (C) Verbund Service und Fahrrad e. V. (2005-2019)
+
+Dieses Dokument, sowie Übersetzungen desselben, dürfen uneingeschränkt kopiert
+und verteilt werden, vorausgesetzt, der obige Urheberrechtshinweis und diese
+und die folgenden Bestimmungen sind in jeder Kopie enthalten.
+
+Veränderungen, die über die Erfordernisse einer Übersetzung hinausgehen, sind
+nur erlaubt, wenn die veränderte Version nicht den Namen veloconnect benützt
+und deutliche Hinweise darauf enthält, dass diese geänderte Version auf der
+veloconnect-Spezifikation beruht und inhaltliche Veränderungen vorgenommen
+worden sind. Ferner ist der Urheber dieser Modifikationen zu benennen.
+
+Zweck dieser Spezifikation ist die Implementierung von Software. Der Urheber
+dieser Spezifikation weist ausdrücklich darauf hin, dass sich aus dem
+Urheberrecht an dieser Spezifikation keinerlei Rechte an diesen
+Implementierungen ableiten und umgekehrt aus den Implementierungen keinerlei
+Ansprüche an den Urheber der Spezifikation entstehen. Insbesondere übernimmt
+der Urheber dieser Spezifikation keinerlei Verantwortung für die Konformität
+einer Implementierung zur veloconnect-Spezifikation und verlangt auch keine
+Lizenzgebühren für die Benutzung der Spezifikation.
+
+Der Urheber übernimmt keinerlei Gewährleistung, insbesondere nicht dafür, dass
+diese Spezifikation fehlerfrei oder für einen bestimmten Zweck geeignet
+ist. Die hiermit gewährten Rechte sind unwiderruflich.
+******************************************************************************
+-->
+
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns="urn:veloconnect:transaction-1.0"
+  xmlns:udt="urn:oasis:names:specification:ubl:schema:xsd:UnspecializedDatatypes-1.0" targetNamespace="urn:veloconnect:transaction-1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+  <xsd:import namespace="urn:oasis:names:specification:ubl:schema:xsd:UnspecializedDatatypes-1.0" schemaLocation="ubl/common/UBL-UnspecializedDatatypes-1.0.xsd"/>
+  <xsd:import namespace="urn:veloconnect:profile-1.1" />
+
+  <xsd:element name="GetStatusRequest" type="RequestType">
+    <xsd:annotation>
+      <xsd:documentation>Request to determine the status of complex transactions.
+If a transactionId is specified in the request, the status of this
+Transaction to be returned; otherwise a list of all still open
+Transactions (see specification)</xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+
+  <xsd:element name="RollbackRequest" type="TransactionRequestType">
+    <xsd:annotation>
+      <xsd:documentation>Request to cancel complex transcations.</xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+
+  <xsd:element name="GetStatusResponse">
+    <xsd:annotation>
+      <xsd:documentation>Response to GetStatusRequest.
+If a transactionId is specified in the request, the status of this
+Transaction to be returned; otherwise a list of all still open
+Transactions (see specification)</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="ResponseType">
+          <xsd:sequence>
+            <xsd:element name="TransactionStatus" type="TransactionStatusType" minOccurs="0" maxOccurs="unbounded" />
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="RollbackResponse" type="TransactionResponseType">
+    <xsd:annotation>
+      <xsd:documentation>Response to rollbackRequest.</xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+
+  <xsd:complexType name="RequestType">
+    <xsd:annotation>
+      <xsd:documentation>Generic request type. 
+All specific request types are derived from this.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="BuyersID" type="udt:IdentifierType"/>
+      <xsd:element name="Credential" type="CredentialType" />
+      <xsd:element name="SellersID" type="udt:IdentifierType" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="TransactionID" type="xsd:normalizedString" minOccurs="0" maxOccurs="1" />
+      <xsd:element name="IsTest" type="xsd:boolean" minOccurs="0" maxOccurs="1" />
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="TransactionRequestType">
+    <xsd:annotation>
+      <xsd:documentation>Generic request type for use in complex transactions.
+All specific requests that are used in transactions
+are derived from this.
+Exception: Requests to start a transaction.
+(See specification)</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexContent>
+      <xsd:restriction base="RequestType">
+        <xsd:sequence>
+          <xsd:element name="BuyersID" type="udt:IdentifierType"/>
+          <xsd:element name="Credential" type="CredentialType" />
+          <xsd:element name="SellersID" type="udt:IdentifierType" minOccurs="0" maxOccurs="1"/>
+          <xsd:element name="TransactionID" type="xsd:normalizedString" minOccurs="1" maxOccurs="1" />
+          <xsd:element name="IsTest" type="xsd:boolean" minOccurs="0" maxOccurs="1" />
+        </xsd:sequence>
+      </xsd:restriction>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="ResponseType">
+    <xsd:annotation>
+      <xsd:documentation>Generic response type.
+All specific response types are derived from this.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="BuyersID" type="udt:IdentifierType"/>
+      <xsd:element name="ResponseCode" type="ResponseCodeType" />
+      <xsd:element name="ResponseMessage" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="SellersID" type="udt:IdentifierType" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="TransactionID" type="xsd:normalizedString" minOccurs="0" maxOccurs="1" />
+      <xsd:element name="StatusCode" type="StatusCodeType" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="IsTest" type="xsd:boolean" minOccurs="0" maxOccurs="1" />
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="TransactionResponseType">
+    <xsd:annotation>
+      <xsd:documentation>Generic response for the use in transactions. 
+All specific response types, that are used in transactions, are derived from this.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexContent>
+      <xsd:restriction base="ResponseType">
+        <xsd:sequence>
+          <xsd:element name="BuyersID" type="udt:IdentifierType"/>
+          <xsd:element name="ResponseCode" type="ResponseCodeType" />
+          <xsd:element name="ResponseMessage" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+          <xsd:element name="SellersID" type="udt:IdentifierType" minOccurs="0" maxOccurs="1"/>
+          <xsd:element name="TransactionID" type="xsd:normalizedString" minOccurs="1" maxOccurs="1" />
+          <xsd:element name="StatusCode" type="StatusCodeType" minOccurs="1" maxOccurs="1"/>
+          <xsd:element name="IsTest" type="xsd:boolean" minOccurs="0" maxOccurs="1"/>
+        </xsd:sequence>
+      </xsd:restriction>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+
+  <xsd:complexType name="TransactionStatusType">
+    <xsd:annotation>
+      <xsd:documentation>Information about the state of a transaction.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="TransactionId" type="xsd:normalizedString" />
+      <xsd:element name="StatusCode" type="StatusCodeType" />
+      <xsd:element name="Transaction" type="TransactionType" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:simpleType name="StatusCodeType">
+    <xsd:annotation>
+      <xsd:documentation>Codes for the possible transactions states. 
+The following convention applies:
+1       : Starting state
+100-199 : final state 
+1-49    : rollback allowed
+(see specification.)</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:integer">
+      <xsd:minInclusive value="1" />
+      <xsd:maxInclusive value="199" />
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="CredentialType">
+    <xsd:annotation>
+      <xsd:documentation>To authenticate the customer.
+At the moment, only simple password-based authentication is used
+(such as in online shops).
+Possible extension: Use of certificates, as the
+technical and organizational requirements are met.
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:choice minOccurs="1" maxOccurs="1">
+      <xsd:element name="Password" type="xsd:string"/>
+    </xsd:choice>
+  </xsd:complexType>
+
+  <xsd:simpleType name="ResponseCodeType">
+    <xsd:annotation>
+      <xsd:documentation>Exclusive list of possible response codes. 
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:positiveInteger">
+      <xsd:enumeration value="200">
+        <xsd:annotation>
+          <xsd:documentation>200 - Request processed successfully.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="400">
+        <xsd:annotation>
+          <xsd:documentation>400 - General error in request</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="404">
+        <xsd:annotation>
+          <xsd:documentation>404 - Request is not supported.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="405">
+        <xsd:annotation>
+          <xsd:documentation>405 - Request syntactically incorrect.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="406">
+        <xsd:annotation>
+          <xsd:documentation>406 - The request is out of date.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="410">
+        <xsd:annotation>
+          <xsd:documentation>410 - Unkown buyersID.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="411">
+        <xsd:annotation>
+          <xsd:documentation>411 - Authentification failed.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="415">
+        <xsd:annotation>
+          <xsd:documentation>415 - Unkown sellersID.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="420">
+        <xsd:annotation>
+          <xsd:documentation>420 - Unknown transactionID.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="421">
+        <xsd:annotation>
+          <xsd:documentation>421 - No transaction instance available.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="430">
+        <xsd:annotation>
+          <xsd:documentation>430 - The request is not applicable to the current state of the transaction.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="435">
+        <xsd:annotation>
+          <xsd:documentation>435 - A change between test and non-test requests is not allowesd within a transaction.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="500">
+        <xsd:annotation>
+          <xsd:documentation>500 - Internal server error.</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="TransactionType">
+    <xsd:annotation>
+      <xsd:documentation>List of transactions.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:normalizedString">
+      <xsd:enumeration value="Order">
+        <xsd:annotation>
+          <xsd:documentation>Order</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="OrderInOnlineShop">
+        <xsd:annotation>
+          <xsd:documentation>OrderInOnlineShop</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="TextSearch">
+        <xsd:annotation>
+          <xsd:documentation>Full text search</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+</xsd:schema>

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+******************************************************************************
+Copyright (C) Verbund Service und Fahrrad e. V. (2005-2019)
+
+Dieses Dokument, sowie Übersetzungen desselben, dürfen uneingeschränkt kopiert
+und verteilt werden, vorausgesetzt, der obige Urheberrechtshinweis und diese
+und die folgenden Bestimmungen sind in jeder Kopie enthalten.
+
+Veränderungen, die über die Erfordernisse einer Übersetzung hinausgehen, sind
+nur erlaubt, wenn die veränderte Version nicht den Namen veloconnect benützt
+und deutliche Hinweise darauf enthält, dass diese geänderte Version auf der
+veloconnect-Spezifikation beruht und inhaltliche Veränderungen vorgenommen
+worden sind. Ferner ist der Urheber dieser Modifikationen zu benennen.
+
+Zweck dieser Spezifikation ist die Implementierung von Software. Der Urheber
+dieser Spezifikation weist ausdrücklich darauf hin, dass sich aus dem
+Urheberrecht an dieser Spezifikation keinerlei Rechte an diesen
+Implementierungen ableiten und umgekehrt aus den Implementierungen keinerlei
+Ansprüche an den Urheber der Spezifikation entstehen. Insbesondere übernimmt
+der Urheber dieser Spezifikation keinerlei Verantwortung für die Konformität
+einer Implementierung zur veloconnect-Spezifikation und verlangt auch keine
+Lizenzgebühren für die Benutzung der Spezifikation.
+
+Der Urheber übernimmt keinerlei Gewährleistung, insbesondere nicht dafür, dass
+diese Spezifikation fehlerfrei oder für einen bestimmten Zweck geeignet
+ist. Die hiermit gewährten Rechte sind unwiderruflich.
+******************************************************************************
+-->
+
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns="urn:veloconnect:transaction-1.4"
+  xmlns:vt10="urn:veloconnect:transaction-1.0"
+  xmlns:udt="urn:oasis:names:specification:ubl:schema:xsd:UnspecializedDatatypes-1.0" targetNamespace="urn:veloconnect:transaction-1.4" elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+  <xsd:import namespace="urn:oasis:names:specification:ubl:schema:xsd:UnspecializedDatatypes-1.0" schemaLocation="ubl/common/UBL-UnspecializedDatatypes-1.0.xsd"/>
+  <xsd:import namespace="urn:veloconnect:profile-1.1" schemaLocation="profile-1.1.xsd" />
+  <xsd:import namespace="urn:veloconnect:transaction-1.0" schemaLocation="transaction-1.0.xsd" />
+
+  <xsd:element name="GetStatusRequest" type="vt10:RequestType">
+    <xsd:annotation>
+      <xsd:documentation>Request to determine the status of complex transactions.
+If a transactionId is specified in the request, the status of this
+Transaction to be returned; otherwise a list of all still open
+Transactions (see specification)</xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+
+  <xsd:element name="GetStatusResponse">
+    <xsd:annotation>
+      <xsd:documentation>Response to GetStatusRequest.
+If a transactionId is specified in the request, the status of this
+Transaction to be returned; otherwise a list of all still open
+Transactions (see specification)</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:complexContent>
+        <xsd:extension base="vt10:ResponseType">
+          <xsd:sequence>
+            <xsd:element name="TransactionStatus" type="TransactionStatusType" minOccurs="0" maxOccurs="unbounded" />
+          </xsd:sequence>
+        </xsd:extension>
+      </xsd:complexContent>
+    </xsd:complexType>
+  </xsd:element>
+
+
+  <xsd:complexType name="TransactionStatusType">
+    <xsd:annotation>
+      <xsd:documentation>Information about the state of a transaction.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:element name="TransactionId" type="xsd:normalizedString" />
+      <xsd:element name="StatusCode" type="vt10:StatusCodeType" />
+      <xsd:element name="Transaction" type="TransactionType" minOccurs="0" maxOccurs="1"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+
+  <xsd:simpleType name="TransactionType">
+    <xsd:annotation>
+      <xsd:documentation>List of transactions</xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="xsd:normalizedString">
+      <xsd:enumeration value="Order">
+        <xsd:annotation>
+          <xsd:documentation>Order</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="OrderInOnlineShop">
+        <xsd:annotation>
+          <xsd:documentation>OrderInOnlineShop</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="TextSearch">
+        <xsd:annotation>
+          <xsd:documentation>Volltextsuche</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="B2BStock">
+        <xsd:annotation>
+          <xsd:documentation>B2BStock</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+      <xsd:enumeration value="B2CStock">
+        <xsd:annotation>
+          <xsd:documentation>B2CStock</xsd:documentation>
+        </xsd:annotation>
+      </xsd:enumeration>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+</xsd:schema>
